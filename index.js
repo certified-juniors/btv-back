@@ -4,6 +4,7 @@ import bodyParser from 'body-parser';
 import { MongoClient } from 'mongodb';
 import mongoose from 'mongoose';
 import atmsRouter from './app/routes/atms.routes.js';
+import officeRouter from './app/routes/offices.routes.js';
 configDotenv();
 
 const PORT = process.env.PORT || 5000;
@@ -20,6 +21,7 @@ const db_url = `mongodb://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASS
 async function main() {
     await mongoose.connect(db_url);
     app.use("/atms", atmsRouter)
+    app.use("/offices", officeRouter)
     app.listen(PORT, () => {
         console.log("Running on http://localhost:" + PORT + "/");
     });
