@@ -3,7 +3,7 @@ version: '3.1'
 services:
 
   mongo:
-    image: mongo
+    image: mongo:4.4.18
     restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
@@ -25,7 +25,7 @@ services:
       - mongo
 
   mongoimport:
-    image: mongo
+    image: mongo:4.4.18
     depends_on:
       - mongo
     volumes:
