@@ -4,7 +4,7 @@ import ATMModel from "../schemas/atms.schema.js";
 const atmsRouter = Router();
 
 atmsRouter.get("/", (req, res, next) => {
-    ATMModel.find({}, "address").then(atms => {
+    ATMModel.find({}).then(atms => {
         res.send(atms)
     })
 })
