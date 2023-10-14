@@ -6,6 +6,7 @@ import mongoose from 'mongoose';
 import atmsRouter from './app/routes/atms.routes.js';
 import officeRouter from './app/routes/offices.routes.js';
 import otherRouter from './app/routes/other.routes.js';
+import graphhopperRouter from './app/routes/graphhopper.router.js';
 configDotenv();
 
 const PORT = process.env.EXPRESS_PORT || 5000;
@@ -24,6 +25,7 @@ async function main() {
     app.use("/atms", atmsRouter)
     app.use("/offices", officeRouter)
     app.use("/", otherRouter)
+    app.use("/", graphhopperRouter)
     app.listen(PORT, () => {
         console.log("Running on http://localhost:" + PORT + "/");
     });
