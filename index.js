@@ -38,6 +38,7 @@ async function main() {
 
 main()
 
+// Генерация случайной Загруженности
 async function generateRandomLoad() {
     const offices = await OfficeModel.find({});
     offices.forEach(of => {
@@ -64,7 +65,7 @@ async function generateRandomLoad() {
                 const newhours = []
                 of["openHoursIndividual"].forEach(day => {
                     newhours.push({
-                        ...day,
+                        ...day._doc,
                         "averageLoad": (() => {
                             const randomNumbers = [];
                             for (let i = 0; i < 24; i++) {
