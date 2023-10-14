@@ -44,7 +44,6 @@ otherRouter.get("/closest", async (req, res, next) => {
             "error": "longitude and/or latitude are not presented"
         })
     }
-    console.log(search_for, max_results, vehicle, longitude, latitude);
     let search_distance = 0;
     const found_atms = [];
     const found_offices = [];
@@ -62,14 +61,12 @@ otherRouter.get("/closest", async (req, res, next) => {
     while (while_condition()) {
         search_distance += 100;
         const [topRight, bottomLeft] = calculateSquareVertices(search_distance, latitude, longitude);
-        console.log(topRight, bottomLeft);
         const atms_promise = ATMModel.find({})
             .$where(`this.latitude <= ${topRight.latitude} && this.latitude >= ${bottomLeft.latitude} && this.longitude <= ${topRight.longitude} && this.longitude >= ${bottomLeft.longitude}`);
         const office_promise = OfficeModel.find({})
             .$where(`this.latitude <= ${topRight.latitude} && this.latitude >= ${bottomLeft.latitude} && this.longitude <= ${topRight.longitude} && this.longitude >= ${bottomLeft.longitude}`);
         const atms = await atms_promise;
         const offices = await office_promise;
-        console.log(atms, offices);
         found_atms.push(...atms);
         found_offices.push(...offices);
     }
@@ -82,7 +79,6 @@ otherRouter.get("/closest", async (req, res, next) => {
             vehicle,
         });
         const url = `${API}route?point=${point1}&point=${point2}&${query}`;
-        console.log(url);
         const response = await fetch(url, {
             method: "GET"
         });
