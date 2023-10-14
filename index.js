@@ -46,7 +46,7 @@ async function generateRandomLoad() {
                 const newhours = []
                 of["openHours"].forEach(day => {
                     newhours.push({
-                        ...day,
+                        ...day._doc,
                         "averageLoad": (() => {
                             const randomNumbers = [];
                             for (let i = 0; i < 24; i++) {
@@ -56,7 +56,8 @@ async function generateRandomLoad() {
                             return randomNumbers;
                         })()
                     });
-                })
+                });
+                console.log(newhours);
                 return newhours;
             })(),
             "openHoursIndividual": (() => {
@@ -73,7 +74,7 @@ async function generateRandomLoad() {
                             return randomNumbers;
                         })()
                     });
-                })
+                });
                 return newhours;
             })(),
             "currentLoad": Math.floor(Math.random() * 101),
