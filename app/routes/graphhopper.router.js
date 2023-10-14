@@ -17,7 +17,6 @@ graphhopperRouter.get("/route", async (req, res, next) => {
     query.append("key", KEY);
     query.append("type", "json");
     const url = `${API}route?point=${point1}&point=${point2}&${query}`;
-    console.log(url);
     fetch(url, {
         method: "GET"
     }).then(async resp => {
