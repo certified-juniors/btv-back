@@ -25,8 +25,8 @@ const db_url = `mongodb://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASS
 
 async function main() {
     await mongoose.connect(db_url);
-    app.use("/atms", atmsRouter)
-    app.use("/offices", officeRouter)
+    app.use("/atm", atmsRouter)
+    app.use("/office", officeRouter)
     app.use("/", otherRouter)
     app.use("/", graphhopperRouter)
     app.listen(PORT, () => {
