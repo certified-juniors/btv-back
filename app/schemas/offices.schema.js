@@ -7,13 +7,17 @@ const OfficeModelSchema = new Schema({
     "address": String,
     "status": String,
     "openHours": [{
-        days: String,
-        hours: String,
+        "days": String,
+        "hours": String,
+        "averageLoad": [Number],
     }],
     "openHoursIndividual": [{
-        days: String,
-        hours: String,
+        "days": String,
+        "hours": String,
+        "averageLoad": [Number],
     }],
+    "currentLoad": Number,
+    "currentLoadIndividual": Number,
     "officeType": String,
     "salePointFormat": String,
     "suoAvailability": {

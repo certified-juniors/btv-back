@@ -7,6 +7,7 @@ import officeRouter from './app/routes/offices.routes.js';
 import otherRouter from './app/routes/other.routes.js';
 import graphhopperRouter from './app/routes/graphhopper.router.js';
 import cors from "cors"
+import OfficeModel from './app/schemas/offices.schema.js';
 configDotenv();
 
 const PORT = process.env.EXPRESS_PORT || 5000;
@@ -29,6 +30,7 @@ async function main() {
     app.use("/office", officeRouter)
     app.use("/", otherRouter)
     app.use("/", graphhopperRouter)
+    // await generateRandomLoad() // Генерация случайной Загруженности
     app.listen(PORT, () => {
         console.log("Running on http://localhost:" + PORT + "/");
     });
@@ -36,4 +38,46 @@ async function main() {
 
 main()
 
-
+async function generateRandomLoad() {
+    const offices = await OfficeModel.find({});
+    offices.forEach(of => {
+        OfficeModel.findOneAndUpdate({_id: of._id}, {
+            "openHours": (() => {
+                const newhours = []
+                of["openHours"].forEach(day => {
+                    newhours.push({
+                        ...day,
+                        "averageLoad": (() => {
+                            const randomNumbers = [];
+                            for (let i = 0; i < 24; i++) {
+                                const randomNumber = Math.floor(Math.random() * 101); // Генерируем случайное число от 0 до 100
+                                randomNumbers.push(randomNumber); // Добавляем число в массив
+                            }
+                            return randomNumbers;
+                        })()
+                    });
+                })
+                return newhours;
+            })(),
+            "openHoursIndividual": (() => {
+                const newhours = []
+                of["openHoursIndividual"].forEach(day => {
+                    newhours.push({
+                        ...day,
+                        "averageLoad": (() => {
+                            const randomNumbers = [];
+                            for (let i = 0; i < 24; i++) {
+                                const randomNumber = Math.floor(Math.random() * 101); // Генерируем случайное число от 0 до 100
+                                randomNumbers.push(randomNumber); // Добавляем число в массив
+                            }
+                            return randomNumbers;
+                        })()
+                    });
+                })
+                return newhours;
+            })(),
+            "currentLoad": Math.floor(Math.random() * 101),
+            "currentLoadIndividual": Math.floor(Math.random() * 101),
+        }).exec()
+    })
+}
