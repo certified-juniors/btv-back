@@ -11,6 +11,10 @@ const KEY = process.env.GRAPHHOPPER_KEY;
 
 const API = "https://graphhopper.com/api/1/";
 
+
+// Выбор банкоматов и офисов в пределах экрана пользователя
+// ne - сереровосточная точка
+// sw - юнозападная точка
 otherRouter.get("/by_region", async (req, res, next) => {
     const nelongitude = +req.query["ne-longitude"];
     const nelatitude = +req.query["ne-latitude"];
@@ -32,7 +36,8 @@ otherRouter.get("/by_region", async (req, res, next) => {
     }
 });
 
-
+// Рекомендация ближайших отделений, подробнее:
+// https://md.cry1s.ru/s/_c7u-D1WG#-GET-closest-
 otherRouter.get("/closest", async (req, res, next) => {
     try {
         let {
@@ -43,6 +48,7 @@ otherRouter.get("/closest", async (req, res, next) => {
             latitude,
             individual
         } = req.query;
+        // По умолчанию
         search_for = search_for || "all";
         max_results = max_results || 3;
         max_results = +max_results;
@@ -53,9 +59,11 @@ otherRouter.get("/closest", async (req, res, next) => {
                 "error": "longitude and/or latitude are not provided"
             });
         }
+        
         let search_distance = 0;
         const found_atms = [];
         const found_offices = [];
+        // Условие выхода из циклы - хотя бы одно ближайшее отделениеы
         const while_condition = () => {
             switch (search_for) {
                 case "offices":
@@ -67,6 +75,7 @@ otherRouter.get("/closest", async (req, res, next) => {
                     return found_atms.length + found_offices.length < 1;
             }
         };
+        // Поиск банкомата/Отделения в квадрате
         while (while_condition()) {
             search_distance += 100;
             const [topRight, bottomLeft] = calculateSquareVertices(search_distance, latitude, longitude);
@@ -83,8 +92,10 @@ otherRouter.get("/closest", async (req, res, next) => {
             found_atms.push(...atms);
             found_offices.push(...offices);
         }
+        // Местоположение пользователя
         const point1 = latitude.toString() + "," + longitude.toString();
 
+        // Используя API для построения маршрута узнаем время
         async function fetchTimeToArrive(point1, point2, vehicle) {
             const query = new URLSearchParams({
                 key: KEY,
@@ -99,6 +110,7 @@ otherRouter.get("/closest", async (req, res, next) => {
             return route?.paths ? route.paths.sort((a, b) => a.time - b.time)[0].time : 10000000000;
         }
 
+        // Перевод загруженности во время ожидания
         function calculateTimeInWait(load, individual) {
             const x = individual ? load.currentLoadIndividual : load.currentLoad;
             return (0.003 * (x ** 2) + 0.15 * x) * 60 * 1000;
@@ -108,6 +120,7 @@ otherRouter.get("/closest", async (req, res, next) => {
             total: 0
         };
 
+        // Парсим всё в ответ
         if (search_for === "all" || search_for === "atms") {
             response.atms = [];
             for (let atm of found_atms) {
@@ -147,6 +160,8 @@ otherRouter.get("/closest", async (req, res, next) => {
     }
 });
 
+// Функция принимающая сторону квадрата и центр
+// Возвращает две вершины в долготе и широте
 function calculateSquareVertices(side, latitude, longitude) {
     latitude = +latitude;
     longitude = +longitude;
